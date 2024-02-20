@@ -9,4 +9,8 @@ urlpatterns = [
     path('posts/<int:id>/', views.post_detail, name='post_detail'),
     path('category/<slug:category_slug>/', views.category_posts,
          name='category_posts'),
+<<<<<<< HEAD
 ]
+=======
+]
+>>>>>>> 9b5c0bf4c0cd262d77cbdc08bc9abf26f6ba6f79
