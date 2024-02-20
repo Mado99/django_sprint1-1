@@ -1,10 +1,8 @@
-from django.http import Http404
 from django.shortcuts import render
 
-from typing import Union
+from django.http import Http404
 
-
-posts: list[dict[str, Union[int, str]]] = [
+posts = [
     {
         'id': 0,
         'location': 'Остров отчаянья',
@@ -47,22 +45,26 @@ posts: list[dict[str, Union[int, str]]] = [
     },
 ]
 
-posts_dict: dict[int, dict[str, Union[int, str]]] = {
-    post['id']: post for post in posts
-}
-
 
 def index(request):
-    return render(request, 'blog/index.html', {'posts': posts})
+    """Главная страница / Лента записей"""
+    context = {'posts': posts}
+    return render(request, 'blog/index.html', context)
 
 
-def post_detail(request, post_id):
-    post = posts_dict.get(post_id)
-    if post is None:
-        raise Http404(f'Пост с id={post_id} не найден.')
-    return render(request, 'blog/detail.html', {'post': post})
+def post_detail(request, id):
+    """Отображение полного описания выбранной записи"""
+    post = [post for post in posts if post['id'] == id]
+    if not post:
+        raise Http404('Вы указали неверный id')
+    context = {'post': post[0]}
+    return render(request, 'blog/detail.html', context)
 
 
 def category_posts(request, category_slug):
-    return render(request, 'blog/category.html',
-                  {'category_slug': category_slug})
+    """Отображение публикаций категории"""
+    sorted_posts = [post for post in posts if post['category']
+                    == category_slug]
+    context = {'category': category_slug,
+               'posts': sorted_posts}
+    return render(request, 'blog/category.html', context)
